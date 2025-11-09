@@ -1,8 +1,22 @@
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+);
+
+jest.mock('../../lib/supabase', () => ({
+  supabase: {
+    auth: {
+      signUp: jest.fn(),
+      signInWithPassword: jest.fn(),
+      signOut: jest.fn(),
+      getSession: jest.fn(),
+      getUser: jest.fn(),
+    },
+  },
+}));
+
 import { supabase } from './../../lib/supabase';
 
 import { authService } from '../authService';
-
-jest.mock('./../../lib/supabase');
 
 describe('AuthService', () => {
     beforeEach(() => {
