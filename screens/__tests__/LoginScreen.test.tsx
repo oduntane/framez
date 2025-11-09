@@ -98,8 +98,8 @@ describe('LoginScreen', () => {
     })
 
     it('should disable submit button when fields are empty', () => {
-        const { getByText } = render(<LoginScreen />);
-        const loginButton = getByText('Login');
+        const { getByTestId } = render(<LoginScreen />);
+        const loginButton = getByTestId('login-button');
 
         expect(loginButton.props.accessibilityState?.disabled).toBe(true);
     })

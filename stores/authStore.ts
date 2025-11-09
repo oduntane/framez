@@ -1,16 +1,12 @@
+import { User as SupabaseUser } from '@supabase/supabase-js';
 import { create } from 'zustand';
 import { authService } from '../services/authService';
 
-interface User {
-  id: string;
-  email: string;
-}
-
 interface AuthState {
-  user: User | null;
+  user: SupabaseUser | null;
   isAuthenticated: boolean;
   loading: boolean;
-  setUser: (user: User | null) => void;
+  setUser: (user: SupabaseUser | null) => void;
   setAuthenticated: (isAuthenticated: boolean) => void;
   setLoading: (loading: boolean) => void;
   checkAuthStatus: () => Promise<void>;
