@@ -268,7 +268,7 @@ describe('postService', () => {
 
             expect(result).toEqual(mockPosts);
             expect(result).toHaveLength(2);
-            expect(result[0].profiles).toBeDefined();
+            expect((result[0] as any).profiles).toBeDefined();
         })
 
         it('should return posts sorted by newest first', async () => {
@@ -279,6 +279,7 @@ describe('postService', () => {
                     text: 'Newer post',
                     image_url: null,
                     created_at: '2024-01-02T00:00:00Z',
+                    profiles: { email: 'user2@example.com' },
                 },
                 {
                     id: '1',
@@ -286,6 +287,7 @@ describe('postService', () => {
                     text: 'Older post',
                     image_url: null,
                     created_at: '2024-01-01T00:00:00Z',
+                    profiles: { email: 'user1@example.com' },
                 },
             ];
 
