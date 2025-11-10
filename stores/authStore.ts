@@ -28,7 +28,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       const user = await authService.getCurrentUser();
       
       if (user) {
-        set({ user, isAuthenticated: true });
+        set({ user: user as SupabaseUser, isAuthenticated: true });
       } else {
         set({ user: null, isAuthenticated: false });
       }
