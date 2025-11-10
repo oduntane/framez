@@ -40,10 +40,10 @@ describe('postService', () => {
                 error: null,
             });
 
-            // Mock fetch and blob
-            const mockBlob = new Blob(['test'], { type: 'image/jpeg' });
+            // Mock fetch and arrayBuffer
+            const mockArrayBuffer = new ArrayBuffer(8);
             (global.fetch as jest.Mock).mockResolvedValue({
-                blob: jest.fn().mockResolvedValue(mockBlob),
+                arrayBuffer: jest.fn().mockResolvedValue(mockArrayBuffer),
             });
 
             const mockUpload = jest.fn().mockResolvedValue({
@@ -79,10 +79,10 @@ describe('postService', () => {
                 error: null,
             });
 
-            // Mock fetch and blob
-            const mockBlob = new Blob(['test'], { type: 'image/jpeg' });
+            // Mock fetch and arrayBuffer
+            const mockArrayBuffer = new ArrayBuffer(8);
             (global.fetch as jest.Mock).mockResolvedValue({
-                blob: jest.fn().mockResolvedValue(mockBlob),
+                arrayBuffer: jest.fn().mockResolvedValue(mockArrayBuffer),
             });
 
             const mockUpload = jest.fn().mockResolvedValue({
@@ -117,10 +117,10 @@ describe('postService', () => {
                 error: null,
             });
 
-            // Mock fetch and blob
-            const mockBlob = new Blob(['test'], { type: 'image/jpeg' });
+            // Mock fetch and arrayBuffer
+            const mockArrayBuffer = new ArrayBuffer(8);
             (global.fetch as jest.Mock).mockResolvedValue({
-                blob: jest.fn().mockResolvedValue(mockBlob),
+                arrayBuffer: jest.fn().mockResolvedValue(mockArrayBuffer),
             });
 
             const mockUpload = jest.fn().mockResolvedValue({

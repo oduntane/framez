@@ -27,13 +27,13 @@ export const postService = {
     const fileName = `${Date.now()}.${fileExt}`;
     const filePath = `${user.id}/${fileName}`; // Scope to user ID
 
-    // Convert file URI to blob for upload
+    // Read file as ArrayBuffer for React Native
     const response = await fetch(file.uri);
-    const blob = await response.blob();
+    const arrayBuffer = await response.arrayBuffer();
 
     const { data, error } = await supabase.storage
       .from('post-images')
-      .upload(filePath, blob, {
+      .upload(filePath, arrayBuffer, {
         contentType: file.type,
       });
 
