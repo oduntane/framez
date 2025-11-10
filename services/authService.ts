@@ -35,10 +35,7 @@ export const authService = {
 
   logout: async () => {
     const { error } = await supabase.auth.signOut();
-
-    if (error) {
-      throw new Error(error.message);
-    }
+    return { error };
   },
 
   getCurrentUser: async () => {

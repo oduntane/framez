@@ -10,6 +10,7 @@ interface AuthState {
   setAuthenticated: (isAuthenticated: boolean) => void;
   setLoading: (loading: boolean) => void;
   checkAuthStatus: () => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -34,6 +35,19 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
     } catch (error) {
       set({ user: null, isAuthenticated: false });
+    }
+  },
+
+  logout: async () => {
+    try {
+      const { error } = await authService.logout();
+      if (error) {
+        throw error;
+      }
+      set({ user: null, isAuthenticated: false });
+    } catch (error) {
+      console.error('Error logging out:', error);
+      throw error;
     }
   },
 }));

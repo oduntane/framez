@@ -5,7 +5,15 @@ import { useAuthStore } from '../stores/authStore';
 const UserHeader = () => {
   const user = useAuthStore((state) => state.user);
   const loading = useAuthStore((state) => state.loading);
-  const logout = useAuthStore((state) => (state as any).logout);
+  const logout = useAuthStore((state) => state.logout);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   if (loading) {
     return (
@@ -37,7 +45,7 @@ const UserHeader = () => {
       </View>
       <TouchableOpacity
         testID="logout-button"
-        onPress={logout}
+        onPress={handleLogout}
         style={styles.logoutButton}
       >
         <Text style={styles.logoutText}>Logout</Text>
