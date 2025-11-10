@@ -4,20 +4,15 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
+import SignUpScreen from './screens/SignUpScreen';
 import { useAuthStore } from './stores/authStore';
 
 const Stack = createNativeStackNavigator();
 
-// Placeholder screens until we implement them
+// Placeholder screen until we implement it
 const FeedScreen = () => (
   <View style={styles.container}>
     <Text>Feed Screen</Text>
-  </View>
-);
-
-const SignUpScreen = () => (
-  <View style={styles.container}>
-    <Text>Sign Up Screen (Coming Soon)</Text>
   </View>
 );
 
