@@ -9,6 +9,9 @@ jest.mock('../../lib/supabase', () => ({
     storage: {
       from: jest.fn(),
     },
+    auth: {
+      getUser: jest.fn(),
+    },
   },
 }));
 
@@ -31,6 +34,12 @@ describe('postService', () => {
                 name: 'test.jpg',
             };
 
+            // Mock authenticated user
+            (supabase.auth.getUser as jest.Mock).mockResolvedValue({
+                data: { user: { id: 'user123' } },
+                error: null,
+            });
+
             // Mock fetch and blob
             const mockBlob = new Blob(['test'], { type: 'image/jpeg' });
             (global.fetch as jest.Mock).mockResolvedValue({
@@ -38,7 +47,7 @@ describe('postService', () => {
             });
 
             const mockUpload = jest.fn().mockResolvedValue({
-                data: { path: 'uploads/test.jpg' },
+                data: { path: 'user123/test.jpg' },
                 error: null,
             });
 
@@ -64,6 +73,12 @@ describe('postService', () => {
                 name: 'test.jpg',
             };
 
+            // Mock authenticated user
+            (supabase.auth.getUser as jest.Mock).mockResolvedValue({
+                data: { user: { id: 'user123' } },
+                error: null,
+            });
+
             // Mock fetch and blob
             const mockBlob = new Blob(['test'], { type: 'image/jpeg' });
             (global.fetch as jest.Mock).mockResolvedValue({
@@ -71,7 +86,7 @@ describe('postService', () => {
             });
 
             const mockUpload = jest.fn().mockResolvedValue({
-                data: { path: 'uploads/test.jpg' },
+                data: { path: 'user123/test.jpg' },
                 error: null,
             });
 
@@ -95,6 +110,12 @@ describe('postService', () => {
                 type: 'image/jpeg',
                 name: 'test.jpg',
             };
+
+            // Mock authenticated user
+            (supabase.auth.getUser as jest.Mock).mockResolvedValue({
+                data: { user: { id: 'user123' } },
+                error: null,
+            });
 
             // Mock fetch and blob
             const mockBlob = new Blob(['test'], { type: 'image/jpeg' });

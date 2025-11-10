@@ -16,9 +16,16 @@ interface Post {
 
 export const postService = {
   uploadImage: async (file: ImageFile): Promise<string> => {
+    // Get current authenticated user
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      throw new Error('User must be authenticated to upload images');
+    }
+
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}.${fileExt}`;
-    const filePath = `uploads/${fileName}`;
+    const filePath = `${user.id}/${fileName}`; // Scope to user ID
 
     // Convert file URI to blob for upload
     const response = await fetch(file.uri);
