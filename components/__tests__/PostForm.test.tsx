@@ -7,6 +7,20 @@ import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import React from 'react';
 import PostForm from '../PostForm';
 
+// Mock ImagePickerButton
+jest.mock('../ImagePickerButton', () => {
+  const React = require('react');
+  const { TouchableOpacity, Text } = require('react-native');
+  
+  return function ImagePickerButton({ onImageSelected }: any) {
+    return (
+      <TouchableOpacity onPress={() => onImageSelected('file://test-image.jpg')}>
+        <Text>Select Image</Text>
+      </TouchableOpacity>
+    );
+  };
+});
+
 describe('PostForm', () => {
     beforeEach(() => {
         jest.clearAllMocks();
