@@ -22,11 +22,16 @@ jest.mock('@react-navigation/native', () => ({
 describe('LoginScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        (useAuthStore as unknown as jest.Mock).mockReturnValue({
-            setUser: jest.fn(),
-            setAuthenticated: jest.fn(),
-            setLoading: jest.fn(),
-            loading: false,
+        
+        // Mock Zustand store as a function that returns values based on selector
+        (useAuthStore as unknown as jest.Mock).mockImplementation((selector) => {
+            const store = {
+                setUser: jest.fn(),
+                setAuthenticated: jest.fn(),
+                setLoading: jest.fn(),
+                loading: false,
+            };
+            return selector ? selector(store) : store;
         });
     });
 
@@ -105,11 +110,14 @@ describe('LoginScreen', () => {
     })
 
     it('should show loading spinner while authenticating', () => {
-        (useAuthStore as unknown as jest.Mock).mockReturnValue({
-            setUser: jest.fn(),
-            setAuthenticated: jest.fn(),
-            setLoading: jest.fn(),
-            loading: true,
+        (useAuthStore as unknown as jest.Mock).mockImplementation((selector) => {
+            const store = {
+                setUser: jest.fn(),
+                setAuthenticated: jest.fn(),
+                setLoading: jest.fn(),
+                loading: true,
+            };
+            return selector ? selector(store) : store;
         });
 
         const { getByTestId } = render(<LoginScreen />);
