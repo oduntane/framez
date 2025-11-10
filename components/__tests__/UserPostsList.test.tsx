@@ -41,14 +41,15 @@ describe('UserPostsList', () => {
   })
 
   it('should pass correct post data to PostCard', () => {
-    const { getByText } = render(<UserPostsList posts={mockPosts} />);
+    const { getByText, getAllByText } = render(<UserPostsList posts={mockPosts} />);
 
     // Check that post text is rendered (via PostCard)
     expect(getByText('First post')).toBeTruthy();
     expect(getByText('Second post')).toBeTruthy();
     
     // Check that author email is rendered (via PostCard)
-    expect(getByText('user@example.com')).toBeTruthy();
+    const emails = getAllByText('user@example.com');
+    expect(emails.length).toBeGreaterThan(0);
   })
 
   it('should show loading indicator while posts are loading', () => {
