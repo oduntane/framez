@@ -4,21 +4,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import CreatePostScreen from './screens/CreatePostScreen';
+import FeedScreen from './screens/FeedScreen';
 import LoginScreen from './screens/LoginScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import { useAuthStore } from './stores/authStore';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
-// Placeholder screen until we implement it
-const FeedScreen = () => (
-  <View style={styles.container}>
-    <Text>Feed Screen</Text>
-  </View>
-);
 
 // Tab Navigator for authenticated users
 function MainTabs() {

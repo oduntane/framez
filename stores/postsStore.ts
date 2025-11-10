@@ -12,8 +12,10 @@ interface Post {
 interface PostsState {
   posts: Post[];
   loading: boolean;
+  error: string | null;
   setPosts: (posts: Post[]) => void;
   setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
   fetchPosts: () => Promise<void>;
   addPost: (post: Post) => void;
   removePost: (postId: string) => void;
@@ -22,18 +24,22 @@ interface PostsState {
 export const usePostsStore = create<PostsState>((set) => ({
   posts: [],
   loading: false,
+  error: null,
 
   setPosts: (posts) => set({ posts }),
 
   setLoading: (loading) => set({ loading }),
 
+  setError: (error) => set({ error }),
+
   fetchPosts: async () => {
     try {
-      set({ loading: true });
+      set({ loading: true, error: null });
       const posts = await postService.getPosts();
       set({ posts });
     } catch (error) {
       console.error('Error fetching posts:', error);
+      set({ error: (error as Error).message || 'Failed to fetch posts' });
     } finally {
       set({ loading: false });
     }
