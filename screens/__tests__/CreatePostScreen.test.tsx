@@ -14,6 +14,38 @@ jest.mock('../../services/postService');
 jest.mock('../../stores/authStore');
 jest.mock('../../stores/postsStore');
 
+// Mock PostForm component
+jest.mock('../../components/PostForm', () => {
+  const React = require('react');
+  const { useState } = React;
+  const { View, TextInput, TouchableOpacity, Text, Image } = require('react-native');
+  
+  return function PostForm({ onSubmit }: any) {
+    const [text, setText] = useState('');
+    const [imageUri, setImageUri] = useState(null as string | null);
+
+    return (
+      <View>
+        <TextInput
+          placeholder="What's on your mind?"
+          value={text}
+          onChangeText={setText}
+        />
+        <TouchableOpacity onPress={() => setImageUri('file://test-image.jpg')}>
+          <Text>Select Image</Text>
+        </TouchableOpacity>
+        {imageUri && <Image testID="image-preview" source={{ uri: imageUri }} />}
+        <TouchableOpacity
+          testID="submit-button"
+          onPress={() => onSubmit({ text, imageUri })}
+        >
+          <Text>Post</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+});
+
 const mockNavigate = jest.fn();
 const mockGoBack = jest.fn();
 jest.mock('@react-navigation/native', () => ({

@@ -1,13 +1,17 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import LoginScreen from './screens/LoginScreen';
 import SignUpScreen from './screens/SignUpScreen';
+import CreatePostScreen from './screens/CreatePostScreen';
 import { useAuthStore } from './stores/authStore';
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 // Placeholder screen until we implement it
 const FeedScreen = () => (
@@ -15,6 +19,42 @@ const FeedScreen = () => (
     <Text>Feed Screen</Text>
   </View>
 );
+
+// Tab Navigator for authenticated users
+function MainTabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName: keyof typeof Ionicons.glyphMap;
+
+          if (route.name === 'Feed') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'CreatePost') {
+            iconName = focused ? 'add-circle' : 'add-circle-outline';
+          } else {
+            iconName = 'help-outline';
+          }
+
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#007AFF',
+        tabBarInactiveTintColor: 'gray',
+      })}
+    >
+      <Tab.Screen 
+        name="Feed" 
+        component={FeedScreen}
+        options={{ title: 'Home' }}
+      />
+      <Tab.Screen 
+        name="CreatePost" 
+        component={CreatePostScreen}
+        options={{ title: 'Create Post' }}
+      />
+    </Tab.Navigator>
+  );
+}
 
 export default function App() {
   const [isReady, setIsReady] = useState(false);
@@ -46,21 +86,15 @@ export default function App() {
   return (
     <NavigationContainer>
       <StatusBar style="auto" />
-      <Stack.Navigator initialRouteName={isAuthenticated ? 'Feed' : 'Login'}>
-        <Stack.Screen 
-          name="Login" 
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen 
-          name="SignUp" 
-          component={SignUpScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen 
-          name="Feed" 
-          component={FeedScreen}
-        />
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {!isAuthenticated ? (
+          <>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="SignUp" component={SignUpScreen} />
+          </>
+        ) : (
+          <Stack.Screen name="MainTabs" component={MainTabs} />
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
