@@ -77,7 +77,7 @@ export const postService = {
   getPosts: async (): Promise<Post[]> => {
     const { data, error } = await supabase
       .from('posts')
-      .select('*')
+      .select('*, profiles(email)')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -85,5 +85,20 @@ export const postService = {
     }
 
     return data || [];
+  },
+
+  subscribeToPostsRealtime: (callback: (post: Post) => void) => {
+    const channel = supabase
+      .channel('posts-changes')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'posts' },
+        (payload) => {
+          callback(payload.new as Post);
+        }
+      )
+      .subscribe();
+
+    return channel;
   },
 };
