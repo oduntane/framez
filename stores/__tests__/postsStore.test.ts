@@ -14,6 +14,14 @@ describe('PostsStore', () => {
     const store = usePostsStore.getState();
     store.setPosts([]);
     store.setLoading(false);
+    
+    // Suppress console.error in tests
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    // Restore console.error
+    jest.restoreAllMocks();
   });
 
   it('should have an initial state', () => {
