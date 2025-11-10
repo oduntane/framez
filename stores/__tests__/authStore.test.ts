@@ -30,7 +30,7 @@ describe('AuthStore', () => {
         test('setUser(userData) should update user state', () => {
             const mockUser = { id: '1', email: 'test@example.com' };
             
-            useAuthStore.getState().setUser(mockUser);
+            useAuthStore.getState().setUser(mockUser as any);
 
             expect(useAuthStore.getState().user).toEqual(mockUser);
         })
