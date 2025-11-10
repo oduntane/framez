@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 interface PostCardProps {
   post: {

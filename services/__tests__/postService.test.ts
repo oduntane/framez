@@ -351,7 +351,7 @@ describe('postService', () => {
 
         it('should call callback on new post insert', () => {
             const mockCallback = jest.fn();
-            let insertHandler: Function;
+            let insertHandler: Function = () => {};
 
             const mockOn = jest.fn().mockImplementation((event, config, handler) => {
                 insertHandler = handler;

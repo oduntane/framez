@@ -49,11 +49,11 @@ export const postService = {
   },
 
   createPost: async (userId: string, text: string, imageUrl?: string): Promise<Post> => {
-    if (!userId || userId.trim() === '') {
+    if (!userId) {
       throw new Error('User ID is required');
     }
 
-    if (!text || text.trim() === '') {
+    if (!text.trim()) {
       throw new Error('Post text is required');
     }
 
@@ -64,7 +64,7 @@ export const postService = {
         text,
         image_url: imageUrl || null,
       })
-      .select()
+      .select('*, profiles(email)')
       .single();
 
     if (error) {
