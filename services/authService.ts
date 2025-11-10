@@ -1,10 +1,15 @@
 import { supabase } from '../lib/supabase';
 
 export const authService = {
-  signUp: async (email: string, password: string) => {
+  signUp: async (email: string, password: string, username: string) => {
     const { data, error } = await supabase.auth.signUp({
       email,
-      password
+      password,
+      options: {
+        data: {
+          display_name: username,
+        },
+      },
     });
 
     if (error) {

@@ -1,4 +1,3 @@
-
 jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock')
 );
@@ -36,11 +35,15 @@ describe('UserHeader', () => {
     })
 
     it('should render user name', () => {
-        const userWithName = { ...mockUser, name: 'Test User' };
-
         (useAuthStore as unknown as jest.Mock).mockImplementation((selector) => {
             const store = {
-                user: userWithName,
+                user: { 
+                    id: '1', 
+                    email: 'test@example.com',
+                    user_metadata: {
+                        display_name: 'Test User'
+                    }
+                },
                 loading: false,
                 logout: jest.fn(),
             };

@@ -1,170 +1,156 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
-    ActivityIndicator,
-    KeyboardAvoidingView,
-    Platform,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { authService } from '../services/authService';
 import { useAuthStore } from '../stores/authStore';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   
+  const login = useAuthStore((state) => state.login);
   const navigation = useNavigation();
-  const setUser = useAuthStore((state) => state.setUser);
-  const setAuthenticated = useAuthStore((state) => state.setAuthenticated);
-  const setLoading = useAuthStore((state) => state.setLoading);
-  const loading = useAuthStore((state) => state.loading);
+
+  // Check for success message from navigation params
+  React.useEffect(() => {
+    // Only run if navigation has the required methods (not in tests)
+    if (typeof navigation.addListener !== 'function') {
+      return;
+    }
+
+    const unsubscribe = navigation.addListener('focus', () => {
+      const route = navigation.getState?.()?.routes?.find(r => r.name === 'Login');
+      if (route?.params?.message) {
+        setSuccessMessage(route.params.message);
+        // Clear the message after showing it
+        setTimeout(() => setSuccessMessage(''), 5000);
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const handleLogin = async () => {
     try {
-      setError('');
       setLoading(true);
-
-      const { user, session } = await authService.login(email, password);
-
-      setUser(user);
-      setAuthenticated(true);
-      
-      navigation.navigate('Feed' as never);
+      setError('');
+      setSuccessMessage('');
+      await login(email, password);
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || 'Failed to login');
     } finally {
       setLoading(false);
     }
   };
 
-  const isFormValid = email.trim() !== '' && password.trim() !== '';
-
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <View style={styles.formContainer}>
-        <Text style={styles.title}>Welcome</Text>
-
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          editable={!loading}
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          editable={!loading}
-        />
-
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-        {loading && (
-          <ActivityIndicator
-            testID="loading-spinner"
-            size="large"
-            color="#007AFF"
-            style={styles.spinner}
-          />
-        )}
-
-        <TouchableOpacity
-          testID="login-button"
-          style={[styles.button, !isFormValid && styles.buttonDisabled]}
-          onPress={handleLogin}
-          disabled={!isFormValid || loading}
-          accessibilityState={{ disabled: !isFormValid || loading }}
-        >
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.signupLink}
-          onPress={() => navigation.navigate('SignUp' as never)}
-        >
-          <Text style={styles.signupText}>
-            Don't have an account? <Text style={styles.signupTextBold}>Sign Up</Text>
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+    <View style={styles.container}>
+      <Text style={styles.title}>Welcome</Text>
+      
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+        keyboardType="email-address"
+      />
+      
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+      
+      {successMessage ? <Text style={styles.success}>{successMessage}</Text> : null}
+      {error ? <Text style={styles.error}>{error}</Text> : null}
+      
+      {loading && <ActivityIndicator testID="loading-spinner" size="large" color="#007AFF" />}
+      
+      <TouchableOpacity
+        testID="login-button"
+        style={[styles.button, loading && styles.buttonDisabled]}
+        onPress={handleLogin}
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity onPress={() => navigation.navigate('SignUp' as never)}>
+        <Text style={styles.link}>
+          Don't have an account? <Text style={styles.linkBold}>Sign Up</Text>
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
+    justifyContent: 'center',
     backgroundColor: '#fff',
   },
-  formContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 20,
-  },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 40,
+    marginBottom: 30,
     textAlign: 'center',
   },
   input: {
-    height: 50,
     borderWidth: 1,
     borderColor: '#ddd',
-    borderRadius: 8,
-    paddingHorizontal: 15,
+    padding: 15,
     marginBottom: 15,
+    borderRadius: 8,
     fontSize: 16,
   },
   button: {
-    height: 50,
     backgroundColor: '#007AFF',
+    padding: 15,
     borderRadius: 8,
-    justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
   },
   buttonDisabled: {
-    backgroundColor: '#ccc',
+    opacity: 0.6,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
-  errorText: {
+  error: {
     color: 'red',
-    marginBottom: 10,
+    marginBottom: 15,
     textAlign: 'center',
   },
-  spinner: {
-    marginVertical: 10,
+  success: {
+    color: 'green',
+    marginBottom: 15,
+    textAlign: 'center',
+    fontWeight: '500',
   },
-  signupLink: {
+  link: {
     marginTop: 20,
-    alignItems: 'center',
-  },
-  signupText: {
-    fontSize: 16,
+    textAlign: 'center',
     color: '#666',
   },
-  signupTextBold: {
+  linkBold: {
     color: '#007AFF',
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
 });
 

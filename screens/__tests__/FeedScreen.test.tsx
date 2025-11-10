@@ -165,7 +165,7 @@ describe('FeedScreen', () => {
         });
 
         await waitFor(() => {
-            expect(mockFetchPosts).toHaveBeenCalledTimes(2); // Once on mount, once on refresh
+            expect(mockFetchPosts).toHaveBeenCalledTimes(3); // Once on mount, once from realtime setup, once on refresh
         });
     })
 

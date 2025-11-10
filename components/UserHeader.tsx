@@ -27,19 +27,25 @@ const UserHeader = () => {
     return null;
   }
 
-  const getAvatarInitial = (email?: string): string => {
-    if (!email) return '';
-    return email.charAt(0).toUpperCase();
+  const getAvatarInitial = (user: any): string => {
+    if (user.user_metadata?.display_name) {
+      return user.user_metadata.display_name.charAt(0).toUpperCase();
+    }
+    return user.email.charAt(0).toUpperCase();
+  };
+
+  const getDisplayName = (user: any): string => {
+    return user.user_metadata?.display_name || user.email?.split('@')[0] || 'User';
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.userInfo}>
         <View style={styles.avatar} testID="user-avatar">
-          <Text style={styles.avatarText}>{getAvatarInitial(user.email)}</Text>
+          <Text style={styles.avatarText}>{getAvatarInitial(user)}</Text>
         </View>
         <View style={styles.textContainer}>
-          {(user as any).name && <Text style={styles.userName}>{(user as any).name}</Text>}
+          <Text style={styles.userName}>{getDisplayName(user)}</Text>
           <Text style={styles.userEmail}>{user.email}</Text>
         </View>
       </View>

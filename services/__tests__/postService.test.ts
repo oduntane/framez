@@ -230,7 +230,7 @@ describe('postService', () => {
             await postService.getPosts();
 
             expect(supabase.from).toHaveBeenCalledWith('posts');
-            expect(mockSelect).toHaveBeenCalledWith('*, profiles(email)');
+            expect(mockSelect).toHaveBeenCalledWith('*, profiles(email, display_name)');
         })
 
         it('should return array of posts with author details', async () => {

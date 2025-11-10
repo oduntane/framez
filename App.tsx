@@ -7,8 +7,8 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import CreatePostScreen from './screens/CreatePostScreen';
 import FeedScreen from './screens/FeedScreen';
-import ProfileScreen from './screens/ProfileScreen';
 import LoginScreen from './screens/LoginScreen';
+import ProfileScreen from './screens/ProfileScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import { useAuthStore } from './stores/authStore';
 

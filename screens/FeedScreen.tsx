@@ -37,6 +37,21 @@ const FeedScreen = () => {
     };
   }, []);
 
+  React.useEffect(() => {
+    fetchPosts();
+
+    // Subscribe to real-time post changes
+    const subscription = postService.subscribeToPostsRealtime((newPost) => {
+      // Refresh posts when a new post is created
+      fetchPosts();
+    });
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, [fetchPosts]);
+
   const onRefresh = async () => {
     setRefreshing(true);
     await fetchPosts();

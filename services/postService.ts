@@ -57,14 +57,14 @@ export const postService = {
       throw new Error('Post text is required');
     }
 
-    const { data, error } = await supabase
+    const { data, error} = await supabase
       .from('posts')
       .insert({
         user_id: userId,
         text,
         image_url: imageUrl || null,
       })
-      .select('*, profiles(email)')
+      .select('*, profiles(email, display_name)')
       .single();
 
     if (error) {
@@ -77,7 +77,7 @@ export const postService = {
   getPosts: async (): Promise<Post[]> => {
     const { data, error } = await supabase
       .from('posts')
-      .select('*, profiles(email)')
+      .select('*, profiles(email, display_name)')
       .order('created_at', { ascending: false });
 
     if (error) {

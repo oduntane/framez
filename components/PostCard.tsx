@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import { supabase } from '../lib/supabase';
 
 interface PostCardProps {
   post: {
@@ -8,13 +9,28 @@ interface PostCardProps {
     text: string;
     image_url: string | null;
     created_at: string;
-    profiles: {
-      email: string;
+    profiles?: {
+      email?: string;
+      display_name?: string;
     };
   };
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
+  const [displayName, setDisplayName] = React.useState<string>('');
+
+  React.useEffect(() => {
+    const fetchDisplayName = async () => {
+      const { data } = await supabase.auth.admin.getUserById(post.user_id);
+      const name = data?.user?.user_metadata?.display_name || post.profiles?.email || 'Unknown User';
+      setDisplayName(name);
+    };
+    
+    // Since we can't use admin API, get it from the current post's user metadata when available
+    // For now, use email as fallback
+    setDisplayName(post.profiles?.email?.split('@')[0] || 'Unknown User');
+  }, [post]);
+
   const formatTimestamp = (timestamp: string): string => {
     const now = Date.now();
     const postTime = new Date(timestamp).getTime();
@@ -38,18 +54,25 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     return `${diffInDays} ${diffInDays === 1 ? 'day' : 'days'} ago`;
   };
 
-  const getAvatarInitial = (email: string): string => {
-    return email.charAt(0).toUpperCase();
+  const getDisplayName = (): string => {
+    return post.profiles?.display_name || post.profiles?.email?.split('@')[0] || 'Unknown User';
+  };
+
+  const getAvatarInitial = (): string => {
+    const name = getDisplayName();
+    return name.charAt(0).toUpperCase();
   };
 
   return (
     <View style={styles.card}>
       <View style={styles.header}>
         <View style={styles.avatar} testID="author-avatar">
-          <Text style={styles.avatarText}>{getAvatarInitial(post.profiles.email)}</Text>
+          <Text style={styles.avatarText}>
+            {getAvatarInitial()}
+          </Text>
         </View>
-        <View style={styles.authorInfo}>
-          <Text style={styles.authorName}>{post.profiles.email}</Text>
+        <View style={styles.headerText}>
+          <Text style={styles.username}>{getDisplayName()}</Text>
           <Text style={styles.timestamp} testID="post-timestamp">
             {formatTimestamp(post.created_at)}
           </Text>
@@ -101,10 +124,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  authorInfo: {
+  headerText: {
     flex: 1,
   },
-  authorName: {
+  username: {
     fontSize: 16,
     fontWeight: '600',
     color: '#000',

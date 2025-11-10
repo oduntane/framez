@@ -117,7 +117,7 @@ describe('userService', () => {
             await userService.getUserPosts('user1');
 
             expect(supabase.from).toHaveBeenCalledWith('posts');
-            expect(mockSelect).toHaveBeenCalledWith('*, profiles(email)');
+            expect(mockSelect).toHaveBeenCalledWith('*, profiles(email, display_name)');
         })
 
         it('should return array of user\'s posts', async () => {

@@ -26,7 +26,7 @@ describe('PostCard', () => {
     it('should render author name', () => {
         const { getByText } = render(<PostCard post={mockPost} />);
 
-        expect(getByText('test@example.com')).toBeTruthy();
+        expect(getByText('test')).toBeTruthy(); // Email prefix
     })
 
     it('should render post timestamp', () => {

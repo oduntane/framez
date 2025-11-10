@@ -27,17 +27,23 @@ describe('AuthService', () => {
         it('should call Supabase signup with correct parameters', async () => {
             const email = 'test@example.com';
             const password = 'password123';
+            const username = 'testuser';
             
             (supabase.auth.signUp as jest.Mock).mockResolvedValue({
                 data: { user: { id: '1', email }, session: {} },
                 error: null
             });
 
-            await authService.signUp(email, password);
+            await authService.signUp(email, password, username);
 
             expect(supabase.auth.signUp).toHaveBeenCalledWith({
                 email,
-                password
+                password,
+                options: {
+                    data: {
+                        display_name: username,
+                    },
+                },
             });
         })
         
@@ -50,7 +56,7 @@ describe('AuthService', () => {
                 error: null
             });
 
-            const result = await authService.signUp('test@example.com', 'password123');
+            const result = await authService.signUp('test@example.com', 'password123', 'testuser');
 
             expect(result.user).toEqual(mockUser);
             expect(result.session).toEqual(mockSession);
@@ -62,7 +68,7 @@ describe('AuthService', () => {
                 error: { message: 'Invalid email' }
             });
 
-            await expect(authService.signUp('invalid-email', 'password123'))
+            await expect(authService.signUp('invalid-email', 'password123', 'testuser'))
                 .rejects.toThrow('Invalid email');
         })
     })

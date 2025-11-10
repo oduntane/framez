@@ -47,9 +47,9 @@ describe('UserPostsList', () => {
     expect(getByText('First post')).toBeTruthy();
     expect(getByText('Second post')).toBeTruthy();
     
-    // Check that author email is rendered (via PostCard)
-    const emails = getAllByText('user@example.com');
-    expect(emails.length).toBeGreaterThan(0);
+    // Check that author email prefix is rendered (via PostCard)
+    const usernames = getAllByText('user');
+    expect(usernames.length).toBeGreaterThan(0);
   })
 
   it('should show loading indicator while posts are loading', () => {

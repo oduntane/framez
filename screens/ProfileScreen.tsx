@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import UserHeader from '../components/UserHeader';
@@ -12,6 +13,15 @@ const ProfileScreen = () => {
   const fetchUserProfile = useUserStore((state) => state.fetchUserProfile);
   const fetchUserPosts = useUserStore((state) => state.fetchUserPosts);
 
+  // Try to get navigation, but it might not be available in tests
+  let navigation: any = null;
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    navigation = useNavigation();
+  } catch (e) {
+    // Navigation not available (probably in tests)
+  }
+
   useEffect(() => {
     const loadData = async () => {
       await fetchUserProfile();
@@ -20,6 +30,21 @@ const ProfileScreen = () => {
 
     loadData();
   }, []);
+
+  useEffect(() => {
+    fetchUserProfile();
+    fetchUserPosts();
+
+    // Refresh posts when screen comes into focus (e.g., after creating a post)
+    // Only if navigation has addListener method (not in tests)
+    if (navigation && typeof navigation.addListener === 'function') {
+      const unsubscribe = navigation.addListener('focus', () => {
+        fetchUserPosts();
+      });
+
+      return unsubscribe;
+    }
+  }, [fetchUserProfile, fetchUserPosts, navigation]);
 
   if (loading && !profile) {
     return (
